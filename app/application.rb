@@ -13,7 +13,7 @@ class Application
       return [200, { 'Content-Type' => 'application/json' }, [ all_decks ]]
   
     else
-      resp.write "Path Not Found"
+     
 
     end
 
