@@ -8,7 +8,9 @@ class Application
     #checks that request is a GET and the path requested is looking at the "decks" page
     if req.path == "/decks" && req.get? 
     
-      all_decks = Deck.all.to_json
+      all_decks = Deck.all.to_json({
+        include: :rentals
+      })
 
       return [200, { 'Content-Type' => 'application/json' }, [ all_decks ]]
   
@@ -17,6 +19,12 @@ class Application
       all_owners = Owner.all.to_json
 
       return [200, { 'Content-Type' => 'application/json' }, [ all_owners ]]
+
+    elsif req.path.match(/decks/) && req.get?
+      id = req.path.split("/decks/").last
+      deck = Deck.find(id)
+      
+      return [200, { 'Content-Type' => 'application/json' }, [ deck.to_json({include: {rentals: {include: :renter}}})]]
 
       # elsif req.path == "/owners" && req.post?
       #   hash = JSON.parse(req.body.read)
