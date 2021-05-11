@@ -19,13 +19,14 @@ ActiveRecord::Schema.define(version: 2021_05_11_015340) do
     t.string "deck_bio"
     t.string "link_url"
     t.boolean "checked_out"
+    t.integer "owner_id"
   end
 
   create_table "owners", force: :cascade do |t|
     t.string "name"
   end
 
-  create_table "rental", force: :cascade do |t|
+  create_table "rentals", force: :cascade do |t|
     t.string "review"
     t.integer "rating"
     t.integer "rental_length"

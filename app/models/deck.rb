@@ -3,4 +3,7 @@ class Deck < ActiveRecord::Base
   has_many :rentals
   has_many :renters, through: :rentals
 
+
+
 end
+

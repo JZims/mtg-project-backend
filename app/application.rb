@@ -4,9 +4,14 @@ class Application
     resp = Rack::Response.new
     req = Rack::Request.new(env)
 
-    if req.path.match(/test/) 
-      return [200, { 'Content-Type' => 'application/json' }, [ {:message => "test response!"}.to_json ]]
 
+    #checks that request is a GET and the path requested is looking at the "decks" page
+    if req.path == "/decks" && req.get? 
+    
+      all_decks = Deck.all.to_json
+
+      return [200, { 'Content-Type' => 'application/json' }, [ all_decks ]]
+  
     else
       resp.write "Path Not Found"
 

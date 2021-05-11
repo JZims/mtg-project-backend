@@ -1,7 +1,7 @@
 class CreateRentals < ActiveRecord::Migration[5.2]
 
   def change
-    create_table :rental do |t|
+    create_table :rentals do |t|
       t.string :review
       t.integer :rating
       t.integer :rental_length
