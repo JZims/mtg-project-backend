@@ -9,7 +9,7 @@ class Application
     if req.path == "/decks" && req.get? 
     
       all_decks = Deck.all.to_json({
-        include: :rentals
+        methods: [:owner, :rentals]
       })
       return [200, { 'Content-Type' => 'application/json' }, [ all_decks ]]
   
@@ -22,8 +22,16 @@ class Application
     elsif req.path.match(/decks/) && req.get?
       id = req.path.split("/decks/").last
       deck = Deck.find(id)
+      deck_json = deck.to_json({
+        include: {
+          rentals: {
+            include: :renter
+          }
+        },
+        methods: [:owner]
+      })
       
-      return [200, { 'Content-Type' => 'application/json' }, [ deck.to_json({include: {rentals: {include: :renter}}})]]
+      return [200, { 'Content-Type' => 'application/json' }, [ deck_json ]]
 
     elsif req.path.match(/decks/) && req.delete?
       id = req.path.split("/decks/").last
@@ -37,6 +45,37 @@ class Application
         hash = JSON.parse(req.body.read)
         new_owner = Owner.create(hash)
           return [201, { 'Content-Type' => 'application/json'}, [ new_owner.to_json]]
+
+    elsif req.path == "/decks" && req.post?
+  
+      hash = JSON.parse(req.body.read)
+      new_deck = Deck.create(hash)
+        return [201, { 'Content-Type' => 'application/json'}, [ new_deck.to_json]]
+
+    elsif req.path == "/rentals" && req.get?
+
+      all_rentals = Rental.all.to_json
+
+      return [200, { 'Content-Type' => 'application/json' }, [ all_rentals ]]
+
+    elsif req.path == "/rentals" && req.post?
+  
+      hash = JSON.parse(req.body.read)
+      new_rental = Rental.create(hash)
+        return [201, { 'Content-Type' => 'application/json'}, [ new_rental.to_json]]
+
+    elsif req.path == "/renters" && req.get?
+
+      all_renters = Renter.all.to_json
+
+      return [200, { 'Content-Type' => 'application/json' }, [ all_renters ]]
+
+    elsif req.path == "/renters" && req.post?
+  
+      hash = JSON.parse(req.body.read)
+      new_renter = Renter.create(hash)
+      # Deck.find(hash["deck_id"]).check_out_deck
+        return [201, { 'Content-Type' => 'application/json'}, [ new_renter.to_json ]]
         
     end
     resp.finish
