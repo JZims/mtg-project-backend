@@ -64,6 +64,7 @@ class Application
   
       hash = JSON.parse(req.body.read)
       new_rental = Rental.create(hash)
+      Deck.find(hash["deck_id"]).check_out_deck
         return [201, { 'Content-Type' => 'application/json'}, [ new_rental.to_json]]
 
     elsif req.path == "/renters" && req.get?
@@ -76,7 +77,6 @@ class Application
   
       hash = JSON.parse(req.body.read)
       new_renter = Renter.create(hash)
-      # Deck.find(hash["deck_id"]).check_out_deck
         return [201, { 'Content-Type' => 'application/json'}, [ new_renter.to_json ]]
         
     end
