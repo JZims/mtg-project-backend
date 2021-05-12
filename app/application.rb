@@ -44,12 +44,14 @@ class Application
       
         hash = JSON.parse(req.body.read)
         new_owner = Owner.create(hash)
-          return [201, { 'Content-Type' => 'application/json'}, [ new_owner.to_json]]
+
+        return [201, { 'Content-Type' => 'application/json'}, [ new_owner.to_json]]
 
     elsif req.path == "/decks" && req.post?
-  
       hash = JSON.parse(req.body.read)
+      
       new_deck = Deck.create(hash)
+      # new_deck.set_owner()
         return [201, { 'Content-Type' => 'application/json'}, [ new_deck.to_json]]
 
     elsif req.path == "/rentals" && req.get?

@@ -19,5 +19,9 @@ def check_in_deck
     self.checked_out = false
 end
 
+def set_owner(id)
+  self.owner_id = id
+end
+
 end
 
