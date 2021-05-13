@@ -29,5 +29,9 @@ class Deck < ActiveRecord::Base
     self.owner_id = id
   end
 
+  def get_decks_last_rental
+    self.rentals.last
+  end
+
 end
 

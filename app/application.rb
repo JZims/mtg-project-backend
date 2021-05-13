@@ -40,6 +40,17 @@ class Application
       
       return [200, { 'Content-Type' => 'application/json' }, [ deck.to_json ]]
 
+    elsif req.path.match(/decks/) && req.patch?
+      hash = JSON.parse(req.body.read)
+      id = req.path.split("/decks/").last
+      deck = Deck.find(id)
+      last_rental = deck.get_decks_last_rental
+      last_rental.update_rental(hash)
+      deck.check_in_deck
+      # binding.pry
+      
+      return [200, { 'Content-Type' => 'application/json' }, [ last_rental.to_json ]]
+
     elsif req.path == "/owners" && req.post?
       
         hash = JSON.parse(req.body.read)
