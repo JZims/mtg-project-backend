@@ -5,5 +5,9 @@
 
     def consistent_data
     end
+
+    # def owner_deck_rentals
+    #   self.decks.count.times do
+    # end
   
  end

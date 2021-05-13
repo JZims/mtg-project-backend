@@ -15,9 +15,16 @@ class Application
   
     elsif req.path == "/owners" && req.get?
 
-      all_owners = Owner.all.to_json
+      all_owners = Owner.all.to_json({include: :decks})
 
       return [200, { 'Content-Type' => 'application/json' }, [ all_owners ]]
+
+    elsif req.path.match(/owners/) && req.get?
+      id = req.path.split("/owners/").last
+      owner = Owner.find(id)
+      owner_json = owner.to_json({include: :decks})
+
+      return [200, { 'Content-Type' => 'application/json' }, [ owner_json ]]
 
     elsif req.path.match(/decks/) && req.get?
       id = req.path.split("/decks/").last
@@ -39,6 +46,17 @@ class Application
       deck.destroy
       
       return [200, { 'Content-Type' => 'application/json' }, [ deck.to_json ]]
+
+    elsif req.path.match(/decks/) && req.patch?
+      hash = JSON.parse(req.body.read)
+      id = req.path.split("/decks/").last
+      deck = Deck.find(id)
+      last_rental = deck.get_decks_last_rental
+      last_rental.update_rental(hash)
+      deck.check_in_deck
+      # binding.pry
+      
+      return [200, { 'Content-Type' => 'application/json' }, [ last_rental.to_json ]]
 
     elsif req.path == "/owners" && req.post?
       
@@ -64,6 +82,7 @@ class Application
   
       hash = JSON.parse(req.body.read)
       new_rental = Rental.create(hash)
+      Deck.find(hash["deck_id"]).check_out_deck
         return [201, { 'Content-Type' => 'application/json'}, [ new_rental.to_json]]
 
     elsif req.path == "/renters" && req.get?
@@ -76,7 +95,6 @@ class Application
   
       hash = JSON.parse(req.body.read)
       new_renter = Renter.create(hash)
-      # Deck.find(hash["deck_id"]).check_out_deck
         return [201, { 'Content-Type' => 'application/json'}, [ new_renter.to_json ]]
         
     end

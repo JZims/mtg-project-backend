@@ -13,15 +13,25 @@ class Deck < ActiveRecord::Base
 
   def check_out_deck
     self.checked_out = true
-end
+    self.save
+  end
 
-def check_in_deck
-    self.checked_out = false
-end
+  def check_in_deck
+      self.checked_out = false
+      self.save
+  end
 
-def set_owner(id)
-  self.owner_id = id
-end
+  # def avail_status_toggle
+  #   self.checked_out = !self.checked_out
+  # end
+
+  def set_owner(id)
+    self.owner_id = id
+  end
+
+  def get_decks_last_rental
+    self.rentals.last
+  end
 
 end
 
