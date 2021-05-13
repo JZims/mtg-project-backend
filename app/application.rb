@@ -15,7 +15,7 @@ class Application
   
     elsif req.path == "/owners" && req.get?
 
-      all_owners = Owner.all.to_json
+      all_owners = Owner.all.to_json({include: :decks})
 
       return [200, { 'Content-Type' => 'application/json' }, [ all_owners ]]
 
