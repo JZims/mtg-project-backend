@@ -19,6 +19,13 @@ class Application
 
       return [200, { 'Content-Type' => 'application/json' }, [ all_owners ]]
 
+    elsif req.path.match(/owners/) && req.get?
+      id = req.path.split("/owners/").last
+      owner = Owner.find(id)
+      owner_json = owner.to_json({include: :decks})
+
+      return [200, { 'Content-Type' => 'application/json' }, [ owner_json ]]
+
     elsif req.path.match(/decks/) && req.get?
       id = req.path.split("/decks/").last
       deck = Deck.find(id)
